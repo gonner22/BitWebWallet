@@ -10,6 +10,11 @@ export const COINGECKO_ENDPOINT =
     'https://api.coingecko.com/api/v3/coins/ai-power-grid?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
 
 /**
+ * Xeggex's endpoint for B1T data
+ */
+export const XEGGEX_ENDPOINT = 'https://api.xeggex.com/api/v2/market/getbysymbol/b1t_usdt';
+
+/**
  * The generic market data source template, used to build site-specific classes
  */
 export class MarketSource {
@@ -73,6 +78,39 @@ export class CoinGecko extends MarketSource {
         return !isEmpty(this.cData)
             ? Object.keys(this.cData.market_data.current_price)
             : [];
+    }
+}
+
+/**
+ * The Xeggex market data source
+ */
+export class Xeggex extends MarketSource {
+    constructor() {
+        super();
+        this.strName = 'Xeggex';
+        this.strEndpoint = XEGGEX_ENDPOINT;
+    }
+
+    /**
+     * Get the price in a specific display currency
+     * @param {string} strCurrency - The display currency (currently only supports USD)
+     * @return {Promise<number>}
+     */
+    async getPrice(strCurrency) {
+        await this.ensureCacheExists();
+        // Xeggex provides price in USD, so we return the lastPrice for USD
+        if (strCurrency.toLowerCase() === 'usd') {
+            return this.cData?.lastPriceNumber || 0;
+        }
+        return 0;
+    }
+
+    /**
+     * Get a list of the supported display currencies
+     * @returns {Promise<Array<string>>} - Currently only supports USD
+     */
+    async getCurrencies() {
+        return ['USD'];
     }
 }
 
