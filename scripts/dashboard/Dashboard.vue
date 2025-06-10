@@ -97,12 +97,6 @@ async function parseSecret(secret, password = '') {
             f: (s) => new HdMasterKey({ xpub: s }),
         },
         {
-            test: (s) =>
-                cChainParams.current.PUBKEY_PREFIX.includes(s[0]) &&
-                s.length === 34,
-            f: (s) => new LegacyMasterKey({ address: s }),
-        },
-        {
             test: (s) => verifyWIF(s),
             f: (s) => parseSecret(parseWIF(s)),
         },
