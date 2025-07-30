@@ -20,7 +20,7 @@ import {
     arrActiveLangs,
     tr,
 } from './i18n.js';
-import { CoinGecko, Xeggex, refreshPriceDisplay } from './prices.js';
+import { CoinGecko, B1TExplorer, refreshPriceDisplay } from './prices.js';
 import { Database } from './database.js';
 import { getEventEmitter } from './event_bus.js';
 import { getCurrencyByAlpha2 } from 'country-locale-map';
@@ -43,9 +43,9 @@ function getDefaultCurrency() {
 }
 /**
  * The global market data source
- * @type {Xeggex}
+ * @type {B1TExplorer}
  */
-export let cMarket = new Xeggex();
+export let cMarket = new B1TExplorer();
 /** The user-selected explorer, used for most of MPW's data synchronisation */
 export let cExplorer = cChainParams.current.Explorers[0];
 /** The user-selected MPW node, used for alternative blockchain data */

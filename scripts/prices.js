@@ -10,9 +10,9 @@ export const COINGECKO_ENDPOINT =
     'https://api.coingecko.com/api/v3/coins/ai-power-grid?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
 
 /**
- * Xeggex's endpoint for B1T data
+ * B1T Explorer's endpoint for B1T price data
  */
-export const XEGGEX_ENDPOINT = 'https://api.xeggex.com/api/v2/market/getbysymbol/b1t_usdt';
+export const B1T_EXPLORER_ENDPOINT = 'https://b1texplorer.com/ext/getprice';
 
 /**
  * The generic market data source template, used to build site-specific classes
@@ -82,35 +82,39 @@ export class CoinGecko extends MarketSource {
 }
 
 /**
- * The Xeggex market data source
+ * The B1T Explorer market data source
  */
-export class Xeggex extends MarketSource {
+export class B1TExplorer extends MarketSource {
     constructor() {
         super();
-        this.strName = 'Xeggex';
-        this.strEndpoint = XEGGEX_ENDPOINT;
+        this.strName = 'B1T Explorer';
+        this.strEndpoint = B1T_EXPLORER_ENDPOINT;
     }
 
     /**
      * Get the price in a specific display currency
-     * @param {string} strCurrency - The display currency (currently only supports USD)
+     * @param {string} strCurrency - The display currency (supports USD and USDT)
      * @return {Promise<number>}
      */
     async getPrice(strCurrency) {
         await this.ensureCacheExists();
-        // Xeggex provides price in USD, so we return the lastPrice for USD
-        if (strCurrency.toLowerCase() === 'usd') {
-            return this.cData?.lastPriceNumber || 0;
+        const currency = strCurrency.toLowerCase();
+        
+        // B1T Explorer provides both USD and USDT prices
+        if (currency === 'usd') {
+            return this.cData?.last_price_usd || 0;
+        } else if (currency === 'usdt') {
+            return this.cData?.last_price_usdt || 0;
         }
         return 0;
     }
 
     /**
      * Get a list of the supported display currencies
-     * @returns {Promise<Array<string>>} - Currently only supports USD
+     * @returns {Promise<Array<string>>} - Supports USD and USDT
      */
     async getCurrencies() {
-        return ['USD'];
+        return ['USD', 'USDT'];
     }
 }
 
